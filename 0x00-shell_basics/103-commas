@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -pA1 | grep -v '^\.\.$' | sort -d | tr '\n' ',' | sed 's/,$/\n/'
+ls -apvm
