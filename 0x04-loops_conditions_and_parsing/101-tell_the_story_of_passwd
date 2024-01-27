@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Bash script to display formatted information from /etc/passwd using while loop + IFS
+
+# Use while loop to read each line of /etc/passwd
+while IFS=: read -r username password userid groupid user_info home_directory shell
+do
+    # Display formatted information
+    echo "The user $username is part of the $groupid gang, lives in $home_directory, and rides $shell."
+    echo "USER ID's place is protected by the passcode $password, more info about the user here: $user_info"
+    echo
+done < /etc/passwd
