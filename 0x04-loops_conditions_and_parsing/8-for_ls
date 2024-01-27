@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Bash script to display content of the current directory in a list format
+# Showing only the part of the name after the first dash for non-hidden files
+
+# Use a for loop to iterate over non-hidden files in the current directory
+for file in $(ls -p | grep -v / | grep -v '^\.')
+do
+    # Extract the part of the name after the first dash
+    name_part=$(echo "$file" | cut -d'-' -f2-)
+
+    # Display the formatted output
+    echo "- $name_part"
+done
