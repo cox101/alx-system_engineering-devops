@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Find the process ID of "4-to_infinity_and_beyond" and kill it
+
+kill "$(pgrep -f 4-to_infinity_and_beyond)"
