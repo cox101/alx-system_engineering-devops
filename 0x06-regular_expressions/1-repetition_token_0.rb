@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 
-# Check if the argument matches the pattern /hbt{2,5}n/
-match_result = ARGV[0].match(/hbt{2,5}n/)
+# Use the match method with the regular expression
+match_data = ARGV[0].match(/hbt{2,5}n/)
 
-# Output the match result
-puts match_result ? "Match found: #{match_result[0]}" : "No match found"
-
+# Check if a match is found
+if match_data
+  puts "Match found: #{match_data[0]}"
+else
+  puts "No match found."
+end
