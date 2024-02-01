@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Check if the script is run with elevated privileges
+if [ "$(id -u)" != "0" ]; then
+    echo "Please run this script with elevated privileges (sudo)." >&2
+    exit 1
+fi
+
+# Display listening sockets with PID and program name
+netstat -lp
+
