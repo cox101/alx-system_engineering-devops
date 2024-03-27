@@ -1,9 +1,47 @@
 #!/usr/bin/env bash
-#Install nginx on your web-01 server
-#Nginx should be listening on port 80
-#When querying Nginx at its root / with a GET request (requesting a page)
-# using curl, it must return a page that contains the string Hello World!
-apt-get update
-apt-get install -y nginx
-echo "Hello World!" > /var/www/html/index.nginx-debian.html
-service nginx restart
+# Configures a new Ubuntu machine by installing Nginx to listen on port 80
+# and serve a page with the string "Hello World!"
+
+# Define colors for better output readability
+blue='\e[1;34m'
+green='\e[1;32m'
+reset='\033[0m'
+
+# Function to display messages in blue color
+print_blue() {
+    echo -e "${blue}$1${reset}"
+}
+
+# Function to display messages in green color
+print_green() {
+    echo -e "${green}$1${reset}"
+}
+
+# Update package lists and install Nginx
+print_blue "Updating and installing Nginx..."
+sudo apt-get update -y -qq && sudo apt-get install nginx -y
+
+# Start Nginx service
+sudo service nginx start
+
+# Allow Nginx through the firewall
+sudo ufw allow 'Nginx HTTP'
+
+# Set ownership and permissions for website files
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www/html
+
+# Backup default index file
+index_file="/var/www/html/index.nginx-debian.html"
+backup_file="$index_file.bckp"
+cp "$index_file" "$backup_file"
+
+# Create a new index file with "Hello World!"
+echo -e "Hello World!" | sudo dd status=none of="$index_file"
+
+# Restart Nginx to apply changes
+sudo service nginx restart
+
+# Completion message
+print_green "Configuration completed successfully. "
+
