@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Update the package repository
+sudo apt update
+
+# Install Nginx
+sudo apt install nginx -y
+
+# Configure Nginx to add custom HTTP response header
+sudo tee /etc/nginx/conf.d/custom_response_header.conf > /dev/null <<EOF
+server_tokens off;
+
+add_header X-Served-By \$hostname;
+EOF
+
+# Reload Nginx to apply changes
+sudo systemctl reload nginx
+
+# Ignore SC2154 for shellcheck
+# shellcheck disable=SC2154
+
