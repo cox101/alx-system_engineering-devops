@@ -1,11 +1,25 @@
 # Creates a custom HTTP header response
-exec { 'configure_nginx':
-  command  => 'apt-get -y update; \
-               apt-get -y install nginx; \
-               sed -i "/listen 80 default_server;/a add_header X-Served-By \"$::hostname\";" /etc/nginx/sites-available/default; \
-               service nginx restart',
+
+exec { 'apt-get update':
+  command  => 'apt-get update',
   provider => shell,
-  path     => '/usr/bin:/bin',  # Add necessary paths
-  unless   => 'grep -q "X-Served-By" /etc/nginx/sites-available/default',
+}
+
+package { 'nginx':
+  ensure  => installed,
+  require => Exec['apt-get update'],
+}
+
+file_line { 'Header response':
+  ensure  => 'present',
+  path    => '/etc/nginx/sites-available/default',
+  after   => 'server_name _;',
+  line    => 'add_header X-Served-By $::hostname;',
+  require => Package['nginx'],
+}
+
+service { 'nginx':
+  ensure  => running,
+  require => Package['nginx'],
 }
 
