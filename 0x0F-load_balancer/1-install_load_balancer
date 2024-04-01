@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -e
+
+# Update package repositories
+sudo apt-get update
+
+# Install HAProxy
+sudo apt-get install -y haproxy
+
+# Backup the original configuration file
+sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.default
+
+# Append HAProxy configuration
+sudo tee -a /etc/haproxy/haproxy.cfg <<EOF
+listen load-balance
+    bind :80
+    bind :8080
+    mode http
+    balance roundrobin
+    option httpchk HEAD / HTTP/1.1\r\nHost:\ localhost
+    option forwardfor
+    server 22487-web-01 100.24.206.135 check port 80
+    server 22487-web-02 34.227.92.44 check port 80
+EOF
+
+# Check HAProxy configuration syntax
+sudo haproxy -c -f /etc/haproxy/haproxy.cfg
+
+# Restart HAProxy service
+sudo service haproxy restart
+
