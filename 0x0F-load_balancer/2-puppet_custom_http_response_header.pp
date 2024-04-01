@@ -1,5 +1,4 @@
 # Creates a custom HTTP header response
-
 exec { 'apt-get update':
   command  => 'apt-get update',
   provider => shell,
@@ -22,4 +21,3 @@ service { 'nginx':
   ensure  => running,
   require => Package['nginx'],
 }
-
