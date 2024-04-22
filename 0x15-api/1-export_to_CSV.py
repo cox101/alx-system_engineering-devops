@@ -3,8 +3,8 @@
 Fetches information from JSONPlaceholder API and exports to CSV
 """
 
-import requests
 import csv
+import requests
 import sys
 
 def fetch_user_todo_list(user_id):
