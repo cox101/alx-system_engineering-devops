@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """fetches information from JSONplaceholder API and exports to JSON"""
 
-from json import dump
-from requests import get
-from sys import argv
+import json
+import requests
+import sys
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

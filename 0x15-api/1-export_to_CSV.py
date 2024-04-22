@@ -3,10 +3,9 @@
 Fetches information from JSONPlaceholder API and exports to CSV
 """
 
-from csv import DictWriter, QUOTE_ALL
-from requests import get
-from sys import argv
-
+import csv
+import requests
+import sys
 
 if __name__ == "__main__":
     main_url = "https://jsonplaceholder.typicode.com"

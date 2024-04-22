@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """
-Uses the JSON placeholder api to query data about an employee's TODO list progress
+Uses the JSON placeholder api to query data about an employee's TODO list 
 """
-from requests import get
-from sys import argv
+import requests
+import sys
 
 def get_employee_todo_progress(employee_id):
     main_url = 'https://jsonplaceholder.typicode.com'

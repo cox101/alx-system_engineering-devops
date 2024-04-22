@@ -4,9 +4,9 @@ Exports to-do list information for a given employee ID to a JSON file.
 Usage: python3 export_todo.py <employee_id>
 """
 
-from json import dump
-from requests import get
-from sys import argv
+import json
+import requests
+import sys
 
 def export_todo_list(employee_id):
     base_url = "https://jsonplaceholder.typicode.com"
