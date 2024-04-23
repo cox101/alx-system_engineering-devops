@@ -1,37 +1,34 @@
 #!/usr/bin/python3
 """
-Script to fetch employee TODO list progress from a REST API.
+Uses the JSON placeholder api to query data about an employee
 """
 
 import requests
 import sys
 
-def fetch_employee_todo_progress(employee_id):
-    """
-    Fetches employee TODO list progress from the given API.
-    """
-    url = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(employee_id)
-    response = requests.get(url)
-    todos = response.json()
+def get_employee_todo_progress(employee_id):
+    api_url = f"https://api.example.com/employees/{employee_id}/todos"
 
-    if not todos:
-        print("No data found for employee ID:", employee_id)
-        return
+    try:
+        response = requests.get(api_url)
+        response_data = response.json()
 
-    completed_tasks = [todo for todo in todos if todo['completed']]
-    total_tasks = len(todos)
-    completed_count = len(completed_tasks)
-    employee_name = todos[0]['username']
+        if "error" in response_data:
+            print(f"Error: {response_data['error']}")
+            return
 
-    print("Employee {} is done with tasks({}/{}):".format(employee_name, completed_count, total_tasks))
-    for task in completed_tasks:
-        print("\t", task['title'])
+        employee_name = response_data.get("employee_name", "Unknown Employee")
+        done_tasks = response_data.get("done_tasks", 0)
+        total_tasks = response_data.get("total_tasks", 0)
+
+        print(f"Employee {employee_name} is done with tasks ({done_tasks}/{total_tasks}):")
+        for task_title in response_data.get("completed_task_titles", []):
+            print(f"\t{task_title}")
+
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or not sys.argv[1].isdigit():
-        print("Usage: {} <employee_id>".format(sys.argv[0]))
-        sys.exit(1)
-
-    employee_id = int(sys.argv[1])
-    fetch_employee_todo_progress(employee_id)
+    employee_id = int(input("Enter the employee ID: "))
+    get_employee_todo_progress(employee_id)
 
