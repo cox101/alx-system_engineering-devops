@@ -1,38 +1,33 @@
 #!/usr/bin/python3
 """fetches information from JSONplaceholder API and exports to JSON"""
 
-import json
-import requests
-import sys
+from json import dump
+from requests import get
+from sys import argv
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 script.py <employee_id>")
-        sys.exit(1)
+    users_url = "https://jsonplaceholder.typicode.com/users"
+    users_result = get(users_url).json()
 
-    employee_id = sys.argv[1]
+    big_dict = {}
+    for user in users_result:
+        todo_list = []
 
-    # Fetch user data
-    user_response = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}")
-    user_data = user_response.json()
-    username = user_data['username']
+        pep_fix = "https://jsonplaceholder.typicode.com"
+        todos_url = pep_fix + "/user/{}/todos".format(user.get("id"))
+        name_url = "https://jsonplaceholder.typicode.com/users/{}".format(
+            user.get("id"))
 
-    # Fetch tasks data
-    tasks_response = requests.get(f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}")
-    tasks_data = tasks_response.json()
+        todo_result = get(todos_url).json()
+        name_result = get(name_url).json()
+        for todo in todo_result:
+            todo_dict = {}
+            todo_dict.update({"username": name_result.get("username"),
+                              "task": todo.get("title"),
+                              "completed": todo.get("completed")})
+            todo_list.append(todo_dict)
 
-    # Construct dictionary of tasks
-    tasks_dict = {employee_id: []}
-    for task in tasks_data:
-        task_dict = {
-            "username": username,
-            "task": task["title"],
-            "completed": task["completed"]
-        }
-        tasks_dict[employee_id].append(task_dict)
+        big_dict.update({user.get("id"): todo_list})
 
-    # Write to JSON file
-    with open(f"{employee_id}.json", "w") as file:
-        json.dump(tasks_dict, file, indent=4)
-
-    print(f"Data exported to {employee_id}.json")
+    with open("todo_all_employees.json", 'w') as f:
+        dump(big_dict, f)
