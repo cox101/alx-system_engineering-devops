@@ -1,13 +1,20 @@
 #!/usr/bin/python3
 """
-Uses the JSON placeholder api to query data about an employee's TODO list 
+Uses the JSON placeholder API to query data about an employee's tasks.
 """
+
 import requests
 import sys
 
-def get_employee_todo_progress(employee_id):
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("Usage: python3 employee_tasks.py <employee_id>")
+        sys.exit(1)
+
+    employee_id = sys.argv[1]
     main_url = 'https://jsonplaceholder.typicode.com'
-    todo_url = f"{main_url}/user/{employee_id}/todos"
+
+    todo_url = f"{main_url}/users/{employee_id}/todos"
     name_url = f"{main_url}/users/{employee_id}"
 
     try:
@@ -17,23 +24,16 @@ def get_employee_todo_progress(employee_id):
         todo_num = len(todo_result)
         todo_complete = sum(1 for todo in todo_result if todo.get("completed"))
         name = name_result.get("name")
-        return name, todo_complete, todo_num, todo_result
 
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+        print(f"Employee {name} has completed {todo_complete}/{todo_num} tasks:")
+        for todo in todo_result:
+            if todo.get("completed"):
+                print(f"\t{todo.get('title')}")
+
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
         sys.exit(1)
-
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python3 script_name.py employee_id")
+    except (KeyError, TypeError) as e:
+        print(f"Error processing data: {e}")
         sys.exit(1)
-
-    employee_id = sys.argv[1]
-
-    name, todo_complete, todo_num, todo_result = get_employee_todo_progress(employee_id)
-
-    print(f"Employee {name} is done with tasks({todo_complete}/{todo_num}):")
-    for todo in todo_result:
-        if todo.get("completed"):
-            print(f"\t{todo.get('title')}")
 
