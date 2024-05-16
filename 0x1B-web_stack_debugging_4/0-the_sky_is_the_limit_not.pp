@@ -1,14 +1,5 @@
-file { '/etc/nginx/nginx.conf':
-  ensure  => file,
-  content => template('nginx/nginx.conf.erb'),
-  notify  => Service['nginx'],
+# Fixing the number of failed requests to get to 0
+exec { 'fix--for-nginx':
+  command => "sed -i 's/worker_processes 4;/worker_processes 7;/g' /etc/nginx/nginx.conf; sudo service nginx restart",
+  path    => ['/bin', '/usr/bin', '/usr/sbin']
 }
-
-service { 'nginx':
-  ensure  => running,
-  enable  => true,
-}
-
-# In your nginx.conf.erb template, replace the line defining worker_processes with:
-# worker_processes 7;
-
